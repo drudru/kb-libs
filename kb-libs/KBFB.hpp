@@ -4,6 +4,8 @@
 
 #include "common.h"
 
+#include "NXCanvas.hpp"
+
 // KBFB
 //
 // Linux frame buffer object
@@ -13,7 +15,7 @@ struct KBFB
 {
     NXCanvas * canvas;
 
-    KBFB(NXRect * screen_rect, NXColorChan chans)
+    KBFB(NXRect screen_rect, NXColorChan chans)
     {
         int fbfd = open("/dev/fb1", O_RDWR);
 
@@ -23,11 +25,11 @@ struct KBFB
             panic();
         }
 
-        int screen_datasize = screen_rect->size.w * screen_rect->size.h * chans;
+        int screen_datasize = screen_rect.size.w * screen_rect.size.h * chans;
         void * fbp = mmap(0, screen_datasize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
         close(fbfd);
 
-        screen = new NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
+        canvas = new NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
     }
 };
 
