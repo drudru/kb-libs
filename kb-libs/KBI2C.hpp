@@ -16,10 +16,14 @@
 
 struct KBI2C
 {
-    NXCanvas * canvas;
-    int        i2cfd;
+    NXCanvas   canvas;
+    int        i2cfd  = -1;
 
-    KBI2C(NXRect screen_rect, NXColorChan chans)
+    KBI2C()
+    {
+    }
+
+    void init(NXRect screen_rect, NXColorChan chans)
     {
         i2cfd = open("/dev/i2c-1", O_RDWR);
 
@@ -64,7 +68,7 @@ struct KBI2C
         int screen_datasize = screen_rect.size.w * screen_rect.size.h * chans;
         void * fbp = calloc(1, screen_datasize);
 
-        canvas = new NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
+        canvas = NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
     }
 
 
@@ -139,7 +143,7 @@ struct KBI2C
 
     void render()
     {
-        dbg_render_fb(canvas);
+        //dbg_render_fb(canvas);
         U8 buff[128];
 
         // Set the col and row "address"
@@ -160,7 +164,7 @@ struct KBI2C
                 for (int row = 7; row >= 0; row--)
                 {
                     pt.y = (seg * 8) + row;
-                    if ((canvas->get_pixel(pt)).is_black() == false)
+                    if ((canvas.get_pixel(pt)).is_black() == false)
                     {
                         byte |= 1;
                     }

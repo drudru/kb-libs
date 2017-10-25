@@ -44,10 +44,10 @@ struct KBScreen
     NXRect        text_rect;
 
     const char  * font_path;
-    NXFontAtlas * font;
+    NXFontAtlas   font;
 
-    KBFB        * _fb;
-    KBI2C       * _i2c;
+    KBFB          _fb;
+    KBI2C         _i2c;
 
     void load_font();
 
@@ -77,11 +77,12 @@ struct KBScreen
             case DT_PITFT_22:
                 {
                     screen_rect = {0, 0, 320, 240};
-                    _fb = new KBFB(screen_rect, NXColorChan::RGB565);
+                    _fb.init(screen_rect, NXColorChan::RGB565);
 
-                    _fb->canvas->state.fg = NXColor{ 255, 255,  85, 255}; // Yellow
-                    _fb->canvas->state.bg = NXColor{   0,   0, 170, 255}; // Blue
-                    _fb->canvas->state.mono_color_txform = true;
+                    // https://en.wikipedia.org/wiki/Video_Graphics_Array#Color_palette
+                    _fb.canvas.state.fg = NXColor{ 255, 255,  85, 255}; // Yellow
+                    _fb.canvas.state.bg = NXColor{   0,   0, 170, 255}; // Blue
+                    _fb.canvas.state.mono_color_txform = true;
 
                     load_font();
 
@@ -91,7 +92,7 @@ struct KBScreen
             case DT_ADA_OLED_BONNET:
                 {
                     screen_rect = {0, 0, 128, 64};
-                    _i2c = new KBI2C(screen_rect, NXColorChan::GREY1); // Really mono
+                    _i2c.init(screen_rect, NXColorChan::GREY1); // Really mono
 
                     load_font();
 
@@ -110,9 +111,9 @@ struct KBScreen
         switch (disp_type)
         {
             case DT_PITFT_22:
-                return _fb->canvas;
+                return &_fb.canvas;
             case DT_ADA_OLED_BONNET:
-                return _i2c->canvas;
+                return &_i2c.canvas;
         }
     }
 
@@ -124,7 +125,7 @@ struct KBScreen
                 // nop
                 break;
             case DT_ADA_OLED_BONNET:
-                _i2c->render();
+                _i2c.render();
                 break;
         }
     }
@@ -147,9 +148,9 @@ void KBScreen::load_font()
     NXBitmap * font_bmp =  new NXBitmap { (uint8_t *)font_stb_bmp, {0, 0, width, height}, NXColorChan::GREY1 };
     //fprintf(stderr, "font width: %d height: %d chans: %d\n", width, height, chans);
 
-    font = new NXFontAtlas();
-    font->atlas = font_bmp;
-    font->rect  = { { 0, 0 }, { 192, 104 } };
-    font->size  = { 32, 8 };
-    font->init();
+    //font = NXFontAtlas();
+    font.atlas = font_bmp;
+    font.rect  = { { 0, 0 }, { 192, 104 } };
+    font.size  = { 32, 8 };
+    font.init();
 }

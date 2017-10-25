@@ -13,9 +13,13 @@
 
 struct KBFB
 {
-    NXCanvas * canvas;
+    NXCanvas canvas;
 
-    KBFB(NXRect screen_rect, NXColorChan chans)
+    KBFB()
+    {
+    }
+
+    void init(NXRect screen_rect, NXColorChan chans)
     {
         int fbfd = open("/dev/fb1", O_RDWR);
 
@@ -29,7 +33,7 @@ struct KBFB
         void * fbp = mmap(0, screen_datasize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
         close(fbfd);
 
-        canvas = new NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
+        canvas = NXCanvas{ NXBitmap{(uint8_t *)fbp, screen_rect, chans} };
     }
 };
 
