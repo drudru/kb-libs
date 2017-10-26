@@ -131,7 +131,7 @@ public:
                 {
                     timeout--;
                     if (timeout < 0)
-                        break;
+                        return -1;
                     continue;
                 }
                 else
