@@ -97,7 +97,8 @@ public:
                 _events->send_msg("wait");
                 auto msg = _events->recv_msg();
 
-                fprintf(stderr, "KBListBox msg %s\n", msg._str);
+                // TODO: if debug
+                //fprintf(stderr, "KBListBox msg %s\n", msg._str);
                 if (msg == "up")
                 {
                     if (curr_choice != 0)
