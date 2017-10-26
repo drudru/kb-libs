@@ -96,7 +96,7 @@ struct KBScreen
 
                     load_font();
 
-                    text_rect = {0, 0, 21, 4};
+                    text_rect = {0, 0, 21, 5};
                 }
 
                 break;
