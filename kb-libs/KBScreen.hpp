@@ -93,6 +93,7 @@ struct KBScreen
                 {
                     screen_rect = {0, 0, 128, 64};
                     _i2c.init(screen_rect, NXColorChan::GREY1); // Really mono
+                    _i2c.canvas.state.mono_color_txform = true;
 
                     load_font();
 
